@@ -5,7 +5,7 @@
     <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
   </head>
   <body>
-    <h1>Gas Stats With Moralis</h1>
+    <h1>Gas Stats Prices With Moralis</h1>
 
     <button id="btn-login">Moralis Login</button>
     <button id="btn-logout">Logout</button>
@@ -20,18 +20,18 @@
       async function login() {
         let user = Moralis.User.current();
         if(!user) {
-          user = await Moralis.authencticate();
+          user = await Moralis.authenticate();
         }
         console.log("Logged in user:", user);
       }
 
-      async function logout() {
-        await Moralis.User.logout();
+      async function logOut() {
+        await Moralis.User.logOut();
         console.log("logged out"); 
       }
 
       document.getElementById("btn-login").onclick = login;
-      document.getElementById("btn-logout").onclick = logout;
+      document.getElementById("btn-logout").onclick = logOut;
     </script>
   </body>
 </html>
