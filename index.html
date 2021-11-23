@@ -12,11 +12,26 @@
 
     <script>
       // connect to Moralis server
-
       const serverUrl = "https://swf2f47qvzwx.usemoralis.com:2053/server";
       const appId = "eb9cCmfRsXanZV7wfTENbObzG9poZ4kDPViueaB8";
       Moralis.start({ serverUrl, appId });
 
+      // Add Login with Metamask 
+      async function login() {
+        let user = Moralis.User.current();
+        if(!user) {
+          user = await Moralis.authencticate();
+        }
+        console.log("Logged in user:", user);
+      }
+
+      async function logout() {
+        await Moralis.User.logout();
+        console.log("logged out"); 
+      }
+
+      document.getElementById("btn-login").onclick = login;
+      document.getElementById("btn-logout").onclick = logout;
     </script>
   </body>
 </html>
