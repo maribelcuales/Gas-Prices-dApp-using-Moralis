@@ -54,9 +54,16 @@
         const results = await query.find();
         console.log("user transactions:", results);
       }
-      
+
       //get stats on page load
-      getStats();
+      //getStats();
+      
+      async function handleNewTransaction(subscription) {
+        // log each new transaction
+        subscription.on("create", function(data) {
+          console.log("new transaction: ", data);
+        });
+      }
 
     </script>
   </body>
