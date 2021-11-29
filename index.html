@@ -21,9 +21,11 @@
       async function login() {
         let user = Moralis.User.current();
         if(!user) {
-          user = await Moralis.authenticate();
+          user = await Moralis.Web3.authenticate();
         }
         console.log("Logged in user:", user);
+
+        getStats();
       }
 
       async function logOut() {
@@ -57,7 +59,7 @@
       }
 
       //get stats on page load
-      //getStats();
+      getStats();
       
       async function handleNewTransaction(subscription) {
         // log each new transaction
