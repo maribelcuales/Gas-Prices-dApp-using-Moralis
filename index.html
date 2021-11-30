@@ -11,23 +11,26 @@
     <button id="btn-logout">Logout</button>
     <button id="btn-get-stats">Refresh Stats</button>
 
+    <!-- gas stats go here -->
+    <ul id="gas-stats"></ul>
+
     <script>
       // connect to Moralis server
       const serverUrl = "https://swf2f47qvzwx.usemoralis.com:2053/server";
       const appId = "eb9cCmfRsXanZV7wfTENbObzG9poZ4kDPViueaB8";
       Moralis.start({ serverUrl, appId });
 
-      // Add Login with Metamask 
+      // LOG IN WITH METAMASK 
       async function login() {
         let user = Moralis.User.current();
         if(!user) {
           user = await Moralis.Web3.authenticate();
         }
         console.log("Logged in user:", user);
-
         getStats();
       }
 
+      // LOGOUT 
       async function logOut() {
         await Moralis.User.logOut();
         console.log("logged out"); 
@@ -38,13 +41,16 @@
       document.getElementById("btn-logout").onclick = logOut;
       document.getElementById("btn-get-stats").onclick = getStats;
 
+      // refresh stats 
       function getStats() {
         const user = Moralis.User.current();
         if (user) {
           getUserTransactions(user);
         }
+        getAverageGasPrices();
       }
 
+      // HISTORICAL TRANSACTIONS 
       async function getUserTransactions(user) {
         // create query
         const query = new Moralis.Query("EthTransactions");
@@ -59,9 +65,7 @@
         console.log("user transactions:", results);
       }
 
-      //get stats on page load
-      getStats();
-      
+      // REAL-TIME TRANSACTIONS
       async function handleNewTransaction(subscription) {
         // log each new transaction
         subscription.on("create", function(data) {
@@ -69,6 +73,25 @@
         });
       }
 
+      // CLOUD FUNCTION 
+      async function getAverageGasPrices() {
+        const results = await Moralis.Cloud.run("getAvgGas");
+        console.log("Average User Gas Prices: ", results); 
+        renderGasStats(results);
+      }
+
+      function renderGasStats(data) {
+        const container = document.getElementById("gas-stats");
+        container.innerHTML = data
+          .map(function (row, rank) {
+            return `<li>#${rank + 1}: ${Math.round(row.avgGas)} gwei</li>`;
+          })
+          .join("");
+      }
+
+      //get stats on page load
+      getStats();
+      
     </script>
   </body>
 </html>
